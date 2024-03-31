@@ -1,0 +1,8 @@
+{
+    "name": "config1_test",
+    "maxPrintLevel": "CRITICAL",
+    "minPrintLevel": "DEBUG",
+    "maxRecordLevel": "CRITICAL",
+    "minRecordLevel": "WARN",
+    "printTimeFormat": "%Y-%m-%d %H:%M:%S"
+}
