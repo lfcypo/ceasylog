@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ceasylog',
-    version='1.2.1',
+    version='1.2.2',
     keywords='ceasylog',
     description='A great log util from CandyStar',
     author='CandyStar@HuangXudong',
