@@ -1,4 +1,6 @@
+import ceasylog
 import ceasylog.LoggerLevel as LoggerLevel
+from ceasylog.LoggerNetworkConfiger import LoggerNetworkConfiger
 
 
 class LoggerConfiger(object):
@@ -17,6 +19,9 @@ class LoggerConfiger(object):
 
         self.__isRecordB = False
         self.__recordPath = "./"
+
+        self.__isRecordNetworkB = False
+        self.__networkRecordCfg: LoggerNetworkConfiger = LoggerNetworkConfiger()
 
     @property
     def name(self):
@@ -58,6 +63,14 @@ class LoggerConfiger(object):
     def recordPath(self):
         return self.__recordPath
 
+    @property
+    def isRecordNetworkB(self):
+        return self.__isRecordNetworkB
+
+    @property
+    def networkRecordCfg(self):
+        return self.__networkRecordCfg
+
     def loadFromFile(self, path: str):
         import os
         import json
@@ -76,6 +89,12 @@ class LoggerConfiger(object):
             value = configObject[key]
             if key == "name":
                 self.setName(value)
+            elif key == "version":
+                fileVersion = float(str(value).split(".")[0] + "." + str(value).split(".")[1])
+                version = float(str(ceasylog.VERSION).split(".")[0] + "." + str(ceasylog.VERSION).split(".")[1])
+                if fileVersion > version:
+                    raise Exception(f"LoggerConfiger file version {fileVersion} is higher than ceasylog "
+                                    f"version {version}")
             elif key == "maxPrintLevel":
                 if value == "CRITICAL":
                     value = LoggerLevel.CRITICAL
@@ -140,6 +159,13 @@ class LoggerConfiger(object):
                 self.setRecordPathNameFormat(value)
             elif key == "isRecord":
                 self.isRecord(value)
+            elif key == "network":
+                endpoint = value["endpoint"]
+                header = value["header"]
+                networkCfg = LoggerNetworkConfiger()
+                networkCfg.setEndpoint(endpoint)
+                networkCfg.setHeader(header)
+                self.setNetwork(networkCfg)
             else:
                 raise KeyError(f"Paser LoggerConfiger failed: Unknown key {key}")
 
@@ -147,8 +173,26 @@ class LoggerConfiger(object):
         import os
         import json
         # 存储为配置文件的内容
-        if self.isRecordB:
+        if self.__isRecordB and self.__isRecordNetworkB:
             configObject = {
+                "version": ceasylog.VERSION,
+                "name": self.name,
+                "maxPrintLevel": self.maxPrintLevel.des,
+                "minPrintLevel": self.minPrintLevel.des,
+                "maxRecordLevel": self.maxRecordLevel.des,
+                "minRecordLevel": self.minRecordLevel.des,
+                "printTimeFormat": self.printTimeFormat,
+                "network": {
+                    "endpoint": self.__networkRecordCfg.endpoint,
+                    "header": self.__networkRecordCfg.header
+                },
+                "recordTimeFormat": self.recordTimeFormat,
+                "recordPathNameFormat": self.recordPathNameFormat,
+                "isRecord": self.recordPath
+            }
+        elif self.isRecordB:
+            configObject = {
+                "version": ceasylog.VERSION,
                 "name": self.name,
                 "maxPrintLevel": self.maxPrintLevel.des,
                 "minPrintLevel": self.minPrintLevel.des,
@@ -159,8 +203,23 @@ class LoggerConfiger(object):
                 "recordPathNameFormat": self.recordPathNameFormat,
                 "isRecord": self.recordPath
             }
+        elif self.__isRecordNetworkB:
+            configObject = {
+                "version": ceasylog.VERSION,
+                "name": self.name,
+                "maxPrintLevel": self.maxPrintLevel.des,
+                "minPrintLevel": self.minPrintLevel.des,
+                "maxRecordLevel": self.maxRecordLevel.des,
+                "minRecordLevel": self.minRecordLevel.des,
+                "printTimeFormat": self.printTimeFormat,
+                "network": {
+                    "endpoint": self.__networkRecordCfg.endpoint,
+                    "header": self.__networkRecordCfg.header
+                }
+            }
         else:
             configObject = {
+                "version": ceasylog.VERSION,
                 "name": self.name,
                 "maxPrintLevel": self.maxPrintLevel.des,
                 "minPrintLevel": self.minPrintLevel.des,
@@ -220,7 +279,7 @@ class LoggerConfiger(object):
         self.__recordTimeFormat = recordTimeFormat
 
     def setRecordPathNameFormat(self, printTimeFormat: str):
-        self.__printTimeFormat = printTimeFormat
+        self.__recordPathNameFormat = printTimeFormat
 
     def isRecord(self, path: str):
         self.__isRecordB = True
@@ -228,3 +287,7 @@ class LoggerConfiger(object):
 
     def setRecordPath(self, recordPath: str):
         self.__recordPath = recordPath
+
+    def setNetwork(self, config: LoggerNetworkConfiger):
+        self.__isRecordNetworkB = True
+        self.__networkRecordCfg = config

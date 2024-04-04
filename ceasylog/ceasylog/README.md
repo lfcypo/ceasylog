@@ -2,7 +2,7 @@
 
 一个简单的日志记录工具
 
-更新时间 2024-03-31 
+更新时间 2024-04-04 
 
 ## 介绍
 
@@ -101,6 +101,8 @@ logger.critical("这是一条严重错误日志")
 
 ## 更多功能
 
+**注：所有的相关demo都在项目/demo文件夹中**
+
 ### 配置继承
 
 不同的日志记录器之间的配置可以进行继承
@@ -128,10 +130,10 @@ loggerFather = Logger(loggerCfgFather)
 loggerChild = Logger(loggerCfgChild)
 
 # 这父子两除了名字外其他都一样
-loggerFather.info("俺是他爹er")
-loggerChild.info("俺是他崽er")
+loggerFather.info("俺是他爹")
+loggerChild.info("俺是他崽")
 
-# 另外继承是可以不断连续的 (子可以有孙 孙可以有曾孙.....子子孙孙无穷匮也)
+# 另外继承是可以不断继续的 (子可以有孙 孙可以有曾孙.....子子孙孙无穷匮也)
 
 ```
 
@@ -189,6 +191,68 @@ logger.critical("严重错误信息")
 ```
 
 其中配置文件路径可以为绝对路径 或者是相对于主脚本运行目录的相对路径
+
+#### 推送至网络服务器
+
+ceasylog支持把日志信息推送到您自建的日志服务器上
+
+```python
+"""
+向网络服务器发送日志信息
+
+注意：ceasylog仅提供一个接口请求门面 具体的服务端请您手动实现
+请求的方式使用POST 发送的数据为json
+服务端接收到的内容：
+{
+        "uid": 日志uid, string
+        "msg": 日志内容, string
+        "level": 日志等级 INFO | DEBUG | WARN | ERROR | CRITICAL, enum(string)
+        "time": 记录时间，string(timestamp)
+}
+请求头默认带Content-Type: application/json, 您可以结合自身业务需要自定义 也可及结合服务端实现鉴权需求
+"""
+
+from ceasylog import *
+
+loggerCfg = LoggerConfiger()
+loggerCfg.setName(__name__)
+
+# 创建网络配置器
+loggerNetworkCfg = LoggerNetworkConfiger()
+# 指定目标服务器
+loggerNetworkCfg.setEndpoint("http://127.0.0.1:8080/log")
+# 可以使用setHeader设置请求头 默认带Content-Type: application/json
+# loggerNetworkCfg.setHeader()
+
+# 设置使用网络日志服务器
+loggerCfg.setNetwork(loggerNetworkCfg)
+
+logger = Logger(loggerCfg)
+
+logger.debug("调试信息")
+logger.info("一般信息")
+logger.warn("警告信息")
+logger.error("错误信息")
+logger.critical("严重错误信息")
+
+
+# 服务端可参考下面 flask实现
+
+# from flask import Flask, request
+# from flask_cors import CORS
+#
+# app = Flask(__name__)
+# CORS(app)
+#
+# @app.route("/log", methods=['POST'])
+# def log():
+#     # print(request.headers)
+#     print(request.json)
+#     return "ok."
+#
+# if __name__ == '__main__':
+#     app.run(port=8080)
+```
 
 ## 作者
 

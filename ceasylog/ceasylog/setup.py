@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ceasylog',
-    version='1.1.1',
+    version='1.2.1',
     keywords='ceasylog',
     description='A great log util from CandyStar',
     author='CandyStar@HuangXudong',
@@ -10,5 +10,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     platforms='any',
-    install_requires=['colorama'],
+    install_requires=['colorama', 'requests'],
 )
