@@ -2,11 +2,21 @@
 
 一个简单的日志记录工具
 
-更新时间 2024-04-04 
+更新时间 2024-04-05 
 
 ## 介绍
 
 您可以使用CEasyLog来优雅的记录和打印程序运行过程中的日志信息
+
+### 日志的等级
+
+ceasylog把常用的日志情况分成了五大等级
+
+* DEBUG 调试日志
+* INFO 一般日志
+* WARN 警告日志
+* ERROR 错误日志
+* CRITICAL 严重错误日志
 
 ## 安装
 
@@ -103,6 +113,40 @@ logger.critical("这是一条严重错误日志")
 
 **注：所有的相关demo都在项目/demo文件夹中**
 
+### 打印异常
+
+您可以用try-except配合ceasylog处理异常
+
+```python
+"""
+打印异常
+"""
+from ceasylog import *
+
+# 创建日志配置器
+loggerCfg = LoggerConfiger()
+
+logger = Logger(loggerCfg)
+
+
+def hahaha():
+    # 手动触发个异常
+    return 1 / 0
+
+
+if __name__ == '__main__':
+    try:
+        # 捕捉异常
+        hahaha()
+    except Exception as e:
+        # 打印异常
+        logger.exception(e, LoggerLevel.ERROR)
+        
+        # 这里的LoggerLevel.ERROR指的是打印出来的异常为什么日志等级
+        # 也可以不传 缺省ERROR
+
+```
+
 ### 配置继承
 
 不同的日志记录器之间的配置可以进行继承
@@ -192,7 +236,7 @@ logger.critical("严重错误信息")
 
 其中配置文件路径可以为绝对路径 或者是相对于主脚本运行目录的相对路径
 
-#### 推送至网络服务器
+### 推送信息至网络服务器
 
 ceasylog支持把日志信息推送到您自建的日志服务器上
 

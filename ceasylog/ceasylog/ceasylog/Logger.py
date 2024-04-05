@@ -4,6 +4,7 @@ import random
 import string
 import threading
 import time
+import traceback
 import uuid
 from datetime import datetime
 
@@ -184,6 +185,38 @@ class Logger(object):
         logPrint(msg, LoggerLevel.CRITICAL, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.CRITICAL, self.config, uid, nowTimeRecord)
         logNetworkSender(msg, LoggerLevel.CRITICAL, self.config, uid, timeStamp)
+
+    def exception(self, e: BaseException, level: LoggerLevel = LoggerLevel.ERROR):
+        if not isinstance(e, BaseException):
+            return
+        exceptionBaseInfo = traceback.format_exc(limit=None, chain=True)
+        exceptionBaseInfoList = exceptionBaseInfo.split("\n")
+        exceptionInfo = ""
+        for i in range(len(exceptionBaseInfoList)):
+            i -= 1
+            if i == 0:
+                exceptionInfo = exceptionBaseInfoList[i]
+                continue
+            exceptionInfo = exceptionInfo + "\n" + " " * (len(getTime(self.config.printTimeFormat, self.config.recordTimeFormat)[0]) + 1 + len(getUID()) + 1 + MAX_BLANK + 8) + exceptionBaseInfoList[i]
+        exceptionLoggerCfg = LoggerConfiger()
+        exceptionLoggerCfg.extendBy(self.config)
+        exceptionLoggerCfg.setName(self.config.name)
+        exceptionLoggerCfg.setMaxPrintLevel(level)
+        exceptionLoggerCfg.setMinPrintLevel(level)
+        exceptionLoggerCfg.setMaxRecordLevel(level)
+        exceptionLoggerCfg.setMinRecordLevel(level)
+        exceptionLogger = Logger(exceptionLoggerCfg)
+        if level == LoggerLevel.DEBUG:
+            exceptionLogger.debug(exceptionInfo)
+        elif level == LoggerLevel.INFO:
+            exceptionLogger.info(exceptionInfo)
+        elif level == LoggerLevel.WARN:
+            exceptionLogger.warn(exceptionInfo)
+        elif level == LoggerLevel.ERROR:
+            exceptionLogger.error(exceptionInfo)
+        elif level == LoggerLevel.CRITICAL:
+            exceptionLogger.critical(exceptionInfo)
+
 
     # def d(self, msg):
     #     self.debug(msg)
