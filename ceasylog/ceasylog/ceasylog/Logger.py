@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime
 
 import requests
-from colorama import Fore, Style
+from colorama import Style
 from colorama import init as coloramaInit
 
 from ceasylog.LoggerConfiger import *
@@ -173,6 +173,7 @@ class Logger(object):
         nowTimePrint, nowTimeRecord, timeStamp = getTime(self.config.printTimeFormat, self.config.recordTimeFormat)
         logPrint(msg, LoggerLevel.DEBUG, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.DEBUG, self.config, uid, nowTimeRecord)
+        self.config.handleFunc(LoggerLevel.DEBUG, msg)
         logNetworkSender(msg, LoggerLevel.DEBUG, self.config, uid, timeStamp)
         return uid
 
@@ -181,6 +182,7 @@ class Logger(object):
         nowTimePrint, nowTimeRecord, timeStamp = getTime(self.config.printTimeFormat, self.config.recordTimeFormat)
         logPrint(msg, LoggerLevel.INFO, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.INFO, self.config, uid, nowTimeRecord)
+        self.config.handleFunc(LoggerLevel.INFO, msg)
         logNetworkSender(msg, LoggerLevel.INFO, self.config, uid, timeStamp)
         return uid
 
@@ -189,6 +191,7 @@ class Logger(object):
         nowTimePrint, nowTimeRecord, timeStamp = getTime(self.config.printTimeFormat, self.config.recordTimeFormat)
         logPrint(msg, LoggerLevel.WARN, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.WARN, self.config, uid, nowTimeRecord)
+        self.config.handleFunc(LoggerLevel.WARN, msg)
         logNetworkSender(msg, LoggerLevel.WARN, self.config, uid, timeStamp)
         return uid
 
@@ -197,6 +200,7 @@ class Logger(object):
         nowTimePrint, nowTimeRecord, timeStamp = getTime(self.config.printTimeFormat, self.config.recordTimeFormat)
         logPrint(msg, LoggerLevel.ERROR, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.ERROR, self.config, uid, nowTimeRecord)
+        self.config.handleFunc(LoggerLevel.ERROR, msg)
         logNetworkSender(msg, LoggerLevel.ERROR, self.config, uid, timeStamp)
         return uid
 
@@ -205,6 +209,7 @@ class Logger(object):
         nowTimePrint, nowTimeRecord, timeStamp = getTime(self.config.printTimeFormat, self.config.recordTimeFormat)
         logPrint(msg, LoggerLevel.CRITICAL, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.CRITICAL, self.config, uid, nowTimeRecord)
+        self.config.handleFunc(LoggerLevel.CRITICAL, msg)
         logNetworkSender(msg, LoggerLevel.CRITICAL, self.config, uid, timeStamp)
         return uid
 

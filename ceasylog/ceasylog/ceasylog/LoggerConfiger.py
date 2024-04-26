@@ -1,9 +1,11 @@
+import types
+from random import randint
+
+from colorama import Fore
+
 import ceasylog
 import ceasylog.LoggerLevel as LoggerLevel
 from ceasylog.LoggerNetworkConfiger import LoggerNetworkConfiger
-
-from colorama import Fore, Style
-from random import randint
 
 LOG_STYLE = [
     Fore.LIGHTYELLOW_EX,
@@ -20,6 +22,8 @@ class LoggerConfiger(object):
         self.__name = "default"
 
         self.__style = LOG_STYLE[randint(0, len(LOG_STYLE) - 1)]
+
+        self.handleFunc = lambda: None
 
         self.__maxPrintLevel = LoggerLevel.CRITICAL
         self.__minPrintLevel = LoggerLevel.DEBUG
@@ -94,6 +98,10 @@ class LoggerConfiger(object):
         while lastStyle != self.__style:
             self.__style = LOG_STYLE[randint(0, len(LOG_STYLE) - 1)]
 
+    def setHandleFunc(self, func) -> None:
+        if not isinstance(func, types.FunctionType):
+            raise ValueError("Handler must be a function")
+        self.handleFunc = func
 
     def loadFromFile(self, path: str):
         import os
@@ -277,6 +285,8 @@ class LoggerConfiger(object):
             self.__printTimeFormat = father.printTimeFormat
             self.__recordTimeFormat = father.recordTimeFormat
             self.__recordPathNameFormat = father.recordPathNameFormat
+
+            self.handleFunc = father.handleFunc
 
             self.__isRecordB = father.isRecordB
             self.__recordPath = father.recordPath

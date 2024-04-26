@@ -1,5 +1,5 @@
-from ceasylog import Logger
-from ceasylog import LoggerConfiger
+from ceasylog.Logger import Logger
+from ceasylog.LoggerConfiger import LoggerConfiger
 
 loggerCfg = LoggerConfiger()
 loggerCfg.setName("")
