@@ -20,7 +20,7 @@ ceasylog把常用的日志情况分成了五大等级
 
 ## 安装
 
-```bash
+```
 pip install ceasylog
 ```
 

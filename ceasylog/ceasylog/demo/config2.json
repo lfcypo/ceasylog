@@ -1,5 +1,6 @@
 {
-    "name": "config1_test",
+    "version": "1.2.2",
+    "name": "config2_test",
     "maxPrintLevel": "CRITICAL",
     "minPrintLevel": "DEBUG",
     "maxRecordLevel": "CRITICAL",

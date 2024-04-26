@@ -6,6 +6,7 @@ from ceasylog import *
 
 loggerCfg = LoggerConfiger()
 loggerCfg.loadFromFile("../demo/config1.json")
+loggerCfg.setName("config2_test")
 loggerCfg.saveToFile("../demo/config2.json")
 
 logger = Logger(loggerCfg)

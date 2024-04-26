@@ -1,4 +1,5 @@
 {
+    "version": "2.2.9",
     "name": "config1_test",
     "maxPrintLevel": "CRITICAL",
     "minPrintLevel": "DEBUG",

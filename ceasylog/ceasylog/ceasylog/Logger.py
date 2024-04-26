@@ -29,6 +29,22 @@ LOG_STYLE = [
 MAX_BLANK = 35
 
 
+def getStyle(name: str):
+    """获取样式"""
+    styleMap = {
+        LOG_STYLE[0]: ["a", "b", "c", "d", "u", "0", "8", "9"],
+        LOG_STYLE[1]: ["e", "f", "g", "h", "v", "1", "7"],
+        LOG_STYLE[2]: ["i", "j", "k", "l", "w", "2", "6"],
+        LOG_STYLE[3]: ["m", "n", "o", "p", "x", "3", "5"],
+        LOG_STYLE[4]: ["q", "r", "s", "t", "y", "z", "4"],
+    }
+    startWith = name[:1].lower()
+    for i in styleMap.keys():
+        if startWith in styleMap[i]:
+            return i
+    return LOG_STYLE[random.randint(0, len(LOG_STYLE) - 1)]
+
+
 def getTime(timeFormat1: str, timeFormat2: str) -> tuple[str, str, str]:
     """
     获取时间
@@ -149,7 +165,8 @@ class Logger(object):
         # 超过长度的名称省略
         if len(self.config.name) > MAX_BLANK:
             self.config.setName(self.config.name[:(MAX_BLANK - 13)] + "..." + self.config.name[-10:])
-        self.logStyle = LOG_STYLE[random.randint(0, len(LOG_STYLE) - 1)]
+        # self.logStyle = LOG_STYLE[random.randint(0, len(LOG_STYLE) - 1)]
+        self.logStyle = getStyle(self.config.name)
 
     def debug(self, msg: str):
         uid = getUID()
@@ -157,6 +174,7 @@ class Logger(object):
         logPrint(msg, LoggerLevel.DEBUG, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.DEBUG, self.config, uid, nowTimeRecord)
         logNetworkSender(msg, LoggerLevel.DEBUG, self.config, uid, timeStamp)
+        return uid
 
     def info(self, msg: str):
         uid = getUID()
@@ -164,6 +182,7 @@ class Logger(object):
         logPrint(msg, LoggerLevel.INFO, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.INFO, self.config, uid, nowTimeRecord)
         logNetworkSender(msg, LoggerLevel.INFO, self.config, uid, timeStamp)
+        return uid
 
     def warn(self, msg: str):
         uid = getUID()
@@ -171,6 +190,7 @@ class Logger(object):
         logPrint(msg, LoggerLevel.WARN, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.WARN, self.config, uid, nowTimeRecord)
         logNetworkSender(msg, LoggerLevel.WARN, self.config, uid, timeStamp)
+        return uid
 
     def error(self, msg: str):
         uid = getUID()
@@ -178,6 +198,7 @@ class Logger(object):
         logPrint(msg, LoggerLevel.ERROR, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.ERROR, self.config, uid, nowTimeRecord)
         logNetworkSender(msg, LoggerLevel.ERROR, self.config, uid, timeStamp)
+        return uid
 
     def critical(self, msg: str):
         uid = getUID()
@@ -185,6 +206,7 @@ class Logger(object):
         logPrint(msg, LoggerLevel.CRITICAL, self.config, uid, self.logStyle, nowTimePrint)
         logRecord(msg, LoggerLevel.CRITICAL, self.config, uid, nowTimeRecord)
         logNetworkSender(msg, LoggerLevel.CRITICAL, self.config, uid, timeStamp)
+        return uid
 
     def exception(self, e: BaseException, level: LoggerLevel = LoggerLevel.ERROR):
         if not isinstance(e, BaseException):
@@ -197,7 +219,18 @@ class Logger(object):
             if i == 0:
                 exceptionInfo = exceptionBaseInfoList[i]
                 continue
-            exceptionInfo = exceptionInfo + "\n" + " " * (len(getTime(self.config.printTimeFormat, self.config.recordTimeFormat)[0]) + 1 + len(getUID()) + 1 + MAX_BLANK + 8) + exceptionBaseInfoList[i]
+            exceptionInfo = (exceptionInfo + "\n" + " " * (
+                    len(
+                        getTime(
+                            self.config.printTimeFormat,
+                            self.config.recordTimeFormat
+                        )[0]
+                    ) + 1
+                    + len(getUID())
+                    + 1
+                    + MAX_BLANK
+                    + 8
+            ) + exceptionBaseInfoList[i])
         exceptionLoggerCfg = LoggerConfiger()
         exceptionLoggerCfg.extendBy(self.config)
         exceptionLoggerCfg.setName(self.config.name)
@@ -216,7 +249,6 @@ class Logger(object):
             exceptionLogger.error(exceptionInfo)
         elif level == LoggerLevel.CRITICAL:
             exceptionLogger.critical(exceptionInfo)
-
 
     # def d(self, msg):
     #     self.debug(msg)

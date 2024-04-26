@@ -2,11 +2,24 @@ import ceasylog
 import ceasylog.LoggerLevel as LoggerLevel
 from ceasylog.LoggerNetworkConfiger import LoggerNetworkConfiger
 
+from colorama import Fore, Style
+from random import randint
+
+LOG_STYLE = [
+    Fore.LIGHTYELLOW_EX,
+    Fore.LIGHTBLUE_EX,
+    Fore.LIGHTCYAN_EX,
+    Fore.LIGHTGREEN_EX,
+    Fore.LIGHTMAGENTA_EX,
+]
+
 
 class LoggerConfiger(object):
 
     def __init__(self):
         self.__name = "default"
+
+        self.__style = LOG_STYLE[randint(0, len(LOG_STYLE) - 1)]
 
         self.__maxPrintLevel = LoggerLevel.CRITICAL
         self.__minPrintLevel = LoggerLevel.DEBUG
@@ -26,6 +39,10 @@ class LoggerConfiger(object):
     @property
     def name(self):
         return self.__name
+
+    @property
+    def style(self):
+        return self.__style
 
     @property
     def maxPrintLevel(self):
@@ -71,6 +88,13 @@ class LoggerConfiger(object):
     def networkRecordCfg(self):
         return self.__networkRecordCfg
 
+    def refreshStyle(self):
+        lastStyle = self.__style
+        self.__style = LOG_STYLE[randint(0, len(LOG_STYLE) - 1)]
+        while lastStyle != self.__style:
+            self.__style = LOG_STYLE[randint(0, len(LOG_STYLE) - 1)]
+
+
     def loadFromFile(self, path: str):
         import os
         import json
@@ -94,7 +118,7 @@ class LoggerConfiger(object):
                 version = float(str(ceasylog.VERSION).split(".")[0] + "." + str(ceasylog.VERSION).split(".")[1])
                 if fileVersion > version:
                     raise Exception(f"LoggerConfiger file version {fileVersion} is higher than ceasylog "
-                                    f"version {version}")
+                                    f"version {version}, Please update ceasylog version to {fileVersion}")
             elif key == "maxPrintLevel":
                 if value == "CRITICAL":
                     value = LoggerLevel.CRITICAL
