@@ -4,4 +4,4 @@ from ceasylog.Logger import Logger
 from ceasylog.LoggerConfiger import LoggerConfiger
 from ceasylog.LoggerNetworkConfiger import LoggerNetworkConfiger
 
-VERSION = "1.2.5"
+VERSION = "1.2.7"

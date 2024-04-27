@@ -16,6 +16,10 @@ LOG_STYLE = [
 ]
 
 
+def defaultHandleFunc(level, context):
+    pass
+
+
 class LoggerConfiger(object):
 
     def __init__(self):
@@ -23,7 +27,7 @@ class LoggerConfiger(object):
 
         self.__style = LOG_STYLE[randint(0, len(LOG_STYLE) - 1)]
 
-        self.handleFunc = lambda: None
+        self.handleFunc = defaultHandleFunc
 
         self.__maxPrintLevel = LoggerLevel.CRITICAL
         self.__minPrintLevel = LoggerLevel.DEBUG
@@ -100,6 +104,7 @@ class LoggerConfiger(object):
 
     def setHandleFunc(self, func) -> None:
         if not isinstance(func, types.FunctionType):
+            self.handleFunc = func
             raise ValueError("Handler must be a function")
         self.handleFunc = func
 
