@@ -298,6 +298,10 @@ logger.critical("严重错误信息")
 #     app.run(port=8080)
 ```
 
+## 性能测试
+在6亿次请求中ceasylog的性能表现
+<img width="1076" alt="截屏2024-06-02 13 49 21" src="https://github.com/lfcypo/ceasylog/assets/110813385/b14e2514-90ed-44a8-88be-0a315d8fc169">
+
 ## 作者
 
 糖星科技@黄旭东
