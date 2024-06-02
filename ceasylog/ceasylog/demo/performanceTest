@@ -1,0 +1,66 @@
+from ceasylog import *
+
+loggerCfg = LoggerConfiger()
+loggerCfg.setMinPrintLevel(LoggerLevel.INFO)
+logger = Logger(loggerCfg)
+
+def t1():
+    j = 0
+    for i in range(2000):
+        j += 1
+
+
+def t2():
+    j = 0
+    for i in range(2000):
+        j += 1
+        print(f"{j}")
+
+
+def t3():
+    j = 0
+    for i in range(2000):
+        j += 1
+        logger.info(f"{j}")
+
+
+def t4():
+    j = 0
+    for i in range(2000):
+        j += 1
+        logger.debug(f"{j}")
+
+
+if __name__ == '__main__':
+    import time
+
+    b = []
+
+    for i in range(10000):
+        a = []
+
+        t1ts = time.time()
+        t1()
+        a.append(time.time() - t1ts)
+
+        t2ts = time.time()
+        t2()
+        a.append(time.time() - t2ts)
+
+        t3ts = time.time()
+        t3()
+        a.append(time.time() - t3ts)
+
+        t4ts = time.time()
+        t4()
+        a.append(time.time() - t4ts)
+
+
+        b.append(a)
+
+    print([sum(sublist) / len(sublist) for sublist in zip(*b)])
+
+
+# 大批量数据压测结果
+# [不打印,                print打印，             ceasylog打印，        ceasylog过滤]
+# [5.44518232345581e-05, 0.0061734841823577885, 0.01857954351902008, 0.005676856446266174]
