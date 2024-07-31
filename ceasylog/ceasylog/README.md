@@ -304,6 +304,6 @@ logger.critical("严重错误信息")
 
 ## 作者
 
-糖星科技@黄旭东
+糖方科技@黄子程（黄旭东）
 
-CandyStar@HuangXudong
+Candyrect@HuangZicheng（HuangXudong）
